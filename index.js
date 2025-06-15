@@ -17,14 +17,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 const databaseURL = process.env.DATABASE_URL;
 
-// ✅ Only ONE declaration of allowedOrigins
-const allowedOrigins = [
-  "https://chat-frontend-theta-rouge.vercel.app", // production
-  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app", // preview
-  "https://chat-frontend-plncddi3t-anujs-projects-1fe862cb.vercel.app", // preview
-  "http://localhost:5173", // local dev
-];
+// ✅ Parse allowed origins from ORIGIN env (comma-separated)
+const allowedOrigins = process.env.ORIGIN?.split(",") || [];
 
+// CORS setup
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -39,14 +35,13 @@ app.use(
   })
 );
 
-
-
+// Static files
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use("/uploads/files", express.static("uploads/files"));
 app.use(cookieParser());
 app.use(express.json());
 
-// API Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/messages", messagesRoutes);
@@ -57,10 +52,10 @@ const server = app.listen(port, () => {
   console.log(`🚀 Server is running at http://localhost:${port}`);
 });
 
-// Setup Socket
+// Setup socket.io
 setupSocket(server);
 
-// Connect MongoDB
+// MongoDB connection
 mongoose
   .connect(databaseURL, {
     useNewUrlParser: true,
