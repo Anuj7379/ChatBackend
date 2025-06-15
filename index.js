@@ -19,9 +19,9 @@ const databaseURL = process.env.DATABASE_URL;
 
 // ✅ Only ONE declaration of allowedOrigins
 const allowedOrigins = [
-  "https://chat-frontend-theta-rouge.vercel.app", // production
-  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app", // preview
-  "http://localhost:5173", // local dev
+  "https://chat-frontend-theta-rouge.vercel.app",
+  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app",
+  "http://localhost:5173"
 ];
 
 app.use(
@@ -37,6 +37,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
+
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use("/uploads/files", express.static("uploads/files"));
