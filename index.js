@@ -19,9 +19,10 @@ const databaseURL = process.env.DATABASE_URL;
 
 // ✅ Only ONE declaration of allowedOrigins
 const allowedOrigins = [
-  "https://chat-frontend-theta-rouge.vercel.app",
-  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app",
-  "http://localhost:5173"
+  "https://chat-frontend-theta-rouge.vercel.app", // production
+  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app", // preview
+  "https://chat-frontend-plncddi3t-anujs-projects-1fe862cb.vercel.app", // preview
+  "http://localhost:5173", // local dev
 ];
 
 app.use(
@@ -30,13 +31,14 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("CORS not allowed from this origin"));
+        callback(new Error("CORS not allowed from this origin: " + origin));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
+
 
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
