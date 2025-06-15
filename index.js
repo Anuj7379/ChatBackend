@@ -21,21 +21,31 @@ const databaseURL = process.env.DATABASE_URL;
 const allowedOrigins = process.env.ORIGIN?.split(",") || [];
 
 // Middleware
+import cors from "cors";
+
+// List of allowed frontend origins
+const allowedOrigins = [
+  "https://chat-frontend-theta-rouge.vercel.app", // production URL
+  "https://chat-frontend-git-main-anujs-projects-1fe862cb.vercel.app", // Vercel preview URL
+  "http://localhost:5173", // local dev
+];
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, curl)
+      // allow requests with no origin (like mobile apps or curl)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS"));
+        return callback(new Error("CORS not allowed from this origin"));
       }
     },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
+
 
 app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use("/uploads/files", express.static("uploads/files"));
