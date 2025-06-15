@@ -16,12 +16,22 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 const databaseURL = process.env.DATABASE_URL;
-const origin = process.env.ORIGIN || "http://localhost:3000";
+
+// Allow multiple origins from .env
+const allowedOrigins = process.env.ORIGIN?.split(",") || [];
 
 // Middleware
 app.use(
   cors({
-    origin: [origin],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -38,7 +48,7 @@ app.use("/api/contacts", contactsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/channel", channelRoutes);
 
-// Start Server
+// Start server
 const server = app.listen(port, () => {
   console.log(`🚀 Server is running at http://localhost:${port}`);
 });
@@ -46,11 +56,11 @@ const server = app.listen(port, () => {
 // Setup Socket
 setupSocket(server);
 
-// MongoDB Connection
+// MongoDB connection
 mongoose
   .connect(databaseURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.error("MongoDB connection error:", err.message));
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
