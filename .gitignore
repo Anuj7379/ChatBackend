@@ -1,0 +1,4 @@
+# Don't upload sensitive/local stuff
+node_modules/
+.env
+uploads/
